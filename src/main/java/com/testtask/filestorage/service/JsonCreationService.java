@@ -5,8 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.testtask.filestorage.Exception.NotFoundException;
 import com.testtask.filestorage.model.File;
+import com.testtask.filestorage.model.modelDTO.FileIdDTO;
+import com.testtask.filestorage.model.modelDTO.FilePageDTO;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -29,11 +30,9 @@ public class JsonCreationService {
     public String AddResponseJson(File file) {
         if (file == null)
             return new NotFoundException().toString();
-
-        ObjectNode node = mapper.createObjectNode();
+        FileIdDTO fileIdDTO= new FileIdDTO(file);
         try {
-            node.put("ID", file.getId());
-            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fileIdDTO);
         } catch (JsonProcessingException ex) {
             return new NotFoundException().toString();
         }
@@ -73,12 +72,9 @@ public class JsonCreationService {
     }
 
     public String GetPageResponseJson(List<File> files, long count) {
-        ObjectNode node = mapper.createObjectNode();
+        FilePageDTO filePageDTO=new FilePageDTO(files,count);
         try {
-            node.put("total", count);
-            node.put("page", mapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(files));
-            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(filePageDTO);
 
         } catch (JsonProcessingException ex) {
             throw new NotFoundException();
