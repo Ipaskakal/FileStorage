@@ -1,4 +1,4 @@
-package com.testtask.filestorage.model.modelDTO;
+package com.testtask.filestorage.model.modeldto;
 
 import com.testtask.filestorage.model.File;
 
@@ -9,9 +9,9 @@ public class FilePageDTO {
 
     private List<File> page;
 
-    public FilePageDTO(List<File> files,long count){
-        this.page=files;
-        this.total=count;
+    public FilePageDTO(List<File> files, long count) {
+        this.page = files;
+        this.total = count;
     }
 
     public long getTotal() {

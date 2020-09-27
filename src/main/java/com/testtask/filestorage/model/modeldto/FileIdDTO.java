@@ -1,9 +1,9 @@
-package com.testtask.filestorage.model.modelDTO;
+package com.testtask.filestorage.model.modeldto;
 
 import com.testtask.filestorage.model.File;
 
 public class FileIdDTO {
-    private  String ID;
+    private String ID;
 
     public FileIdDTO(File file) {
         ID = file.getId();
@@ -13,7 +13,7 @@ public class FileIdDTO {
         return ID;
     }
 
-    public void setID(String ID) {
-        this.ID = ID;
+    public void setID(String id) {
+        this.ID = id;
     }
 }

@@ -1,14 +1,17 @@
 package com.testtask.filestorage.controller;
 
 import com.testtask.filestorage.model.File;
+import com.testtask.filestorage.model.modeldto.FileCreationDTO;
 import com.testtask.filestorage.repository.FileRepository;
 import com.testtask.filestorage.service.JsonCreationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.testtask.filestorage.service.TagService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,15 +20,16 @@ import java.util.Optional;
 @RequestMapping("file")
 public class FileController {
 
-    @Autowired
     private final FileRepository fileRepository;
 
-    @Autowired
     private final JsonCreationService jsonCreationService;
 
-    public FileController(FileRepository fileRepository, JsonCreationService jsonCreationService) {
+    private final TagService tagService;
+
+    public FileController(FileRepository fileRepository, JsonCreationService jsonCreationService, TagService tagService) {
         this.fileRepository = fileRepository;
         this.jsonCreationService = jsonCreationService;
+        this.tagService = tagService;
     }
 
     @GetMapping
@@ -46,19 +50,22 @@ public class FileController {
         else {
             files=fileRepository.findAll(PageRequest.of(pageValue,sizeValue));
         }
+        if(files==null)
+            return jsonCreationService.getPageResponseJson(new ArrayList<>(),0);
         count=files.getTotalElements();
         paging=files.getContent();
-        return jsonCreationService.GetPageResponseJson(paging,count);
+        return jsonCreationService.getPageResponseJson(paging,count);
     }
 
 
     @PostMapping
-    public ResponseEntity<String> addFile(@RequestBody File file) {
-
+    public ResponseEntity<String> addFile(@RequestBody FileCreationDTO fileCreationDTO) {
+        File file=new File(fileCreationDTO);
         if (file.getSize() <= 0 || file.getName() == null || file.getName().isBlank())
-            return new ResponseEntity<>(jsonCreationService.AddArgumentExceptionJson(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(jsonCreationService.addArgumentExceptionJson(), HttpStatus.BAD_REQUEST);
+        file.setTags(tagService.findTags(file.getName()));
         File file1 = fileRepository.save(file);
-        return new ResponseEntity<>(jsonCreationService.AddResponseJson(file1), HttpStatus.OK);
+        return new ResponseEntity<>(jsonCreationService.addResponseJson(file1), HttpStatus.OK);
 
     }
 
@@ -70,7 +77,7 @@ public class FileController {
             value.setTags(tags);
             fileRepository.save(value);
         }
-        return jsonCreationService.SuccessJson();
+        return jsonCreationService.successJson();
 
     }
 
@@ -78,9 +85,9 @@ public class FileController {
     public ResponseEntity<String> delete(@PathVariable String id) {
         if (fileRepository.findById(id).isPresent()) {
             fileRepository.deleteById(id);
-            return new ResponseEntity<>(jsonCreationService.SuccessJson(), HttpStatus.OK);
+            return new ResponseEntity<>(jsonCreationService.successJson(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(jsonCreationService.FileNotFound(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(jsonCreationService.fileNotFound(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -95,13 +102,13 @@ public class FileController {
         for (String tag:
              tags) {
             if(!fileTags.contains(tag))
-                return new ResponseEntity<>(jsonCreationService.TagNotFound(),HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(jsonCreationService.tagNotFound(),HttpStatus.BAD_REQUEST);
         }
         for (String tag:
                 tags) {
             fileTags.remove(tag);
         }
         fileRepository.save(value);
-        return new ResponseEntity<>(jsonCreationService.SuccessJson(), HttpStatus.OK);
+        return new ResponseEntity<>(jsonCreationService.successJson(), HttpStatus.OK);
     }
 }

@@ -1,6 +1,7 @@
 package com.testtask.filestorage.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.testtask.filestorage.model.modeldto.FileCreationDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,12 @@ public class File {
     private long size;
 
     private List<String> tags;
+
+    public File(FileCreationDTO fileCreationDTO) {
+        this.name = fileCreationDTO.getName();
+        this.size = fileCreationDTO.getSize();
+
+    }
 
     public String getId() {
         return id;
