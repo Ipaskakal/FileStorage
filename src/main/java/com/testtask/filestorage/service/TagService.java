@@ -24,7 +24,7 @@ public class TagService {
         List<String> response = new ArrayList<>();
         if (fileName == null)
             return response;
-        Pattern pattern = Pattern.compile("\\.[\\w,\\d]{2,4}$");
+        Pattern pattern = Pattern.compile("\\.[a-zA-Z0-9]{2,4}$");
         Matcher matcher = pattern.matcher(fileName);
         if (matcher.find()) {
             String fileExtension = matcher.group();

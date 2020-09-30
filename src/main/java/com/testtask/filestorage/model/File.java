@@ -2,9 +2,7 @@ package com.testtask.filestorage.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.testtask.filestorage.model.modeldto.FileCreationDTO;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -17,12 +15,20 @@ import java.util.List;
 public class File {
     @Id
     @JsonInclude
+    @Getter
+    @Setter
     private String id;
 
+    @Getter
+    @Setter
     private String name;
 
+    @Getter
+    @Setter
     private long size;
 
+    @Getter
+    @Setter
     private List<String> tags;
 
     public File(FileCreationDTO fileCreationDTO) {
@@ -31,36 +37,5 @@ public class File {
 
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public void setSize(long size) {
-        this.size = size;
-    }
-
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
 
 }

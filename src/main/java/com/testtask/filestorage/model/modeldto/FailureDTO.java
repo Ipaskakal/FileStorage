@@ -5,13 +5,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 @AllArgsConstructor
-public class FileCreationDTO {
+public class FailureDTO {
     @Getter
     @Setter
-    private String name;
+    private boolean success;
 
     @Getter
     @Setter
-    private long size;
+    private String error;
 
+    public FailureDTO(String err){
+        this.success=false;
+        this.error=err;
+    }
 }
