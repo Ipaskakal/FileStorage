@@ -37,9 +37,8 @@ public class FileController {
         Page<File> files;
         List<File> paging;
         long count;
-        int pageValue;
+        int pageValue = page.orElse(0);
         int sizeValue = size.orElse(10);
-        pageValue = page.orElse(0);
         if (tags.isPresent()) {
             List<String> value = tags.get();
             files = fileRepository.findByTags(value, PageRequest.of(pageValue, sizeValue));
@@ -57,16 +56,16 @@ public class FileController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> addFile(@RequestBody FileCreationDTO fileCreationDTO) {
         File file = new File(fileCreationDTO);
-        if (file.getSize() <= 0 )
+        if (file.getSize() <= 0)
             return new ResponseEntity<>(new FailureDTO("file size cant be negative")
                     , HttpStatus.BAD_REQUEST);
 
-        if(file.getName() == null || file.getName().isBlank())
+        if (file.getName() == null || file.getName().isBlank())
             return new ResponseEntity<>(new FailureDTO("file name cant be empty")
                     , HttpStatus.BAD_REQUEST);
         Pattern pattern = Pattern.compile("^[A-Za-z0-9-_,\\s]+\\.[a-zA-Z0-9]{2,4}$");
         Matcher matcher = pattern.matcher(file.getName());
-        if(!matcher.find())
+        if (!matcher.find())
             return new ResponseEntity<>(new FailureDTO("the name must have an extension and only Cyrillic letters and numbers")
                     , HttpStatus.BAD_REQUEST);
         file.setTags(tagService.findTags(file.getName()));

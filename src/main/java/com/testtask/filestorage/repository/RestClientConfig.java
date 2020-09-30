@@ -18,10 +18,10 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
     @Override
     @Bean
     public RestHighLevelClient elasticsearchClient() {
-        String hostAndPort= env.getProperty("elasticsearch.host") + ":"+ env.getProperty("elasticsearch.port");
+        String hostAndPort = env.getProperty("elasticsearch.host") + ":" + env.getProperty("elasticsearch.port");
         final ClientConfiguration clientConfiguration = ClientConfiguration.builder()
                 .connectedTo(hostAndPort)
                 .build();
-            return RestClients.create(clientConfiguration).rest();
+        return RestClients.create(clientConfiguration).rest();
     }
 }

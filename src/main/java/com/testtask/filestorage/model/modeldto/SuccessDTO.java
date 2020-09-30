@@ -10,5 +10,5 @@ import lombok.Setter;
 public class SuccessDTO {
     @Getter
     @Setter
-    private boolean success=true;
+    private boolean success = true;
 }

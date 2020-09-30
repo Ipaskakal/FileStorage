@@ -14,8 +14,8 @@ public class FailureDTO {
     @Setter
     private String error;
 
-    public FailureDTO(String err){
-        this.success=false;
-        this.error=err;
+    public FailureDTO(String err) {
+        this.success = false;
+        this.error = err;
     }
 }
