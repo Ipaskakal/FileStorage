@@ -7,9 +7,9 @@ import lombok.Setter;
 public class FileIdDTO {
     @Getter
     @Setter
-    private String ID;
+    private String id;
 
     public FileIdDTO(File file) {
-        ID = file.getId();
+        id = file.getId();
     }
 }

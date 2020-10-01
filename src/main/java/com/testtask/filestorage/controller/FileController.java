@@ -1,10 +1,7 @@
 package com.testtask.filestorage.controller;
 
 import com.testtask.filestorage.model.File;
-import com.testtask.filestorage.model.modeldto.FailureDTO;
-import com.testtask.filestorage.model.modeldto.FileCreationDTO;
-import com.testtask.filestorage.model.modeldto.FilePageDTO;
-import com.testtask.filestorage.model.modeldto.SuccessDTO;
+import com.testtask.filestorage.model.modeldto.*;
 import com.testtask.filestorage.repository.FileRepository;
 import com.testtask.filestorage.service.TagService;
 import lombok.AllArgsConstructor;
@@ -57,20 +54,20 @@ public class FileController {
     public ResponseEntity<Object> addFile(@RequestBody FileCreationDTO fileCreationDTO) {
         File file = new File(fileCreationDTO);
         if (file.getSize() <= 0)
-            return new ResponseEntity<>(new FailureDTO("file size cant be negative")
-                    , HttpStatus.BAD_REQUEST);
-
+            return new ResponseEntity<>(new FailureDTO("file size cant be negative"),
+                    HttpStatus.BAD_REQUEST);
         if (file.getName() == null || file.getName().isBlank())
-            return new ResponseEntity<>(new FailureDTO("file name cant be empty")
-                    , HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new FailureDTO("file name cant be empty"),
+                    HttpStatus.BAD_REQUEST);
         Pattern pattern = Pattern.compile("^[A-Za-z0-9-_,\\s]+\\.[a-zA-Z0-9]{2,4}$");
         Matcher matcher = pattern.matcher(file.getName());
         if (!matcher.find())
-            return new ResponseEntity<>(new FailureDTO("the name must have an extension and only Cyrillic letters and numbers")
-                    , HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    new FailureDTO("the name must have an extension and only Cyrillic letters and numbers"),
+                    HttpStatus.BAD_REQUEST);
         file.setTags(tagService.findTags(file.getName()));
-        File file1 = fileRepository.save(file);
-        return new ResponseEntity<>(file1, HttpStatus.OK);
+        FileIdDTO fileIdDTO = new FileIdDTO(fileRepository.save(file));
+        return new ResponseEntity<>(fileIdDTO, HttpStatus.OK);
 
     }
 
@@ -105,7 +102,7 @@ public class FileController {
     public ResponseEntity<Object> deleteTags(@PathVariable String id, @RequestBody List<String> tags) {
         Optional<File> file = fileRepository.findById(id);
         if (file.isEmpty()) {
-            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new FailureDTO("file not found"), HttpStatus.NOT_FOUND);
         }
         File value = file.get();
         List<String> fileTags = value.getTags();
